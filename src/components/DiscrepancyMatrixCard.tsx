@@ -1,5 +1,5 @@
 import React from "react";
-import { AlertCircle, FileSearch } from "lucide-react";
+import { FileSearch } from "lucide-react";
 
 interface DiscrepancyMatrixCardProps {
   matrix: Record<string, { total: number; detected: number; recallPercentage: number }> | null;
@@ -32,25 +32,27 @@ export const DiscrepancyMatrixCard: React.FC<DiscrepancyMatrixCardProps> = ({ ma
   if (!matrix) return null;
 
   return (
-    <div className="mb-6 p-5 rounded-xl glass-panel">
-      <div className="flex items-center gap-2 mb-4">
-        <FileSearch className="h-5 w-5 text-indigo-400" />
-        <h3 className="text-sm font-semibold text-white">Discrepancy Type Detection Matrix (vs Ground Truth)</h3>
+    <div className="mb-5 p-4 rounded-lg flat-panel">
+      <div className="flex items-center gap-2 mb-3">
+        <FileSearch className="h-4 w-4 text-slate-700" />
+        <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+          Discrepancy Detection Matrix (Scored vs Ground Truth)
+        </h3>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2.5">
         {Object.entries(matrix).map(([key, data]) => {
           const info = labelMap[key] || { title: key, desc: "" };
           return (
-            <div key={key} className="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
-              <span className="text-xs font-medium text-slate-300 block truncate">{info.title}</span>
-              <div className="flex items-baseline justify-between mt-2">
-                <span className="text-lg font-bold text-white">
-                  {data.detected} / {data.total}
+            <div key={key} className="p-2.5 rounded-md bg-slate-50 border border-slate-200">
+              <span className="text-xs font-semibold text-slate-800 block truncate">{info.title}</span>
+              <div className="flex items-baseline justify-between mt-1">
+                <span className="text-base font-bold text-slate-900 font-mono">
+                  {data.detected}/{data.total}
                 </span>
-                <span className="text-xs font-semibold text-indigo-400">{Math.round(data.recallPercentage)}%</span>
+                <span className="text-xs font-bold text-blue-700 font-mono">{Math.round(data.recallPercentage)}%</span>
               </div>
-              <p className="text-[10px] text-slate-400 mt-1 line-clamp-2">{info.desc}</p>
+              <p className="text-[10px] text-slate-500 mt-1 leading-tight line-clamp-2">{info.desc}</p>
             </div>
           );
         })}

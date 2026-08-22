@@ -1,5 +1,5 @@
 import React from "react";
-import { ShieldCheck, Sparkles, RefreshCw, Play } from "lucide-react";
+import { ShieldCheck, RefreshCw, Play, Building2 } from "lucide-react";
 
 interface NavbarProps {
   onRunBatch: () => void;
@@ -9,44 +9,42 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onRunBatch, onSeedData, isLoading }) => {
   return (
-    <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <header className="border-b border-slate-200 bg-white sticky top-0 z-40 shadow-xs">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         {/* Brand */}
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
-            <ShieldCheck className="h-6 w-6 text-white" />
+          <div className="h-8 w-8 rounded-md bg-slate-900 flex items-center justify-center text-white">
+            <ShieldCheck className="h-5 w-5" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-lg text-white tracking-tight">Savoneyy</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium">
-                AI Finance Controller
-              </span>
-            </div>
-            <p className="text-xs text-slate-400 hidden sm:block">
-              Multi-Source Settlement & Audit Engine (Track 4)
-            </p>
+          <div className="flex items-center gap-2.5">
+            <span className="font-bold text-base text-slate-900 tracking-tight font-sans">Savoneyy</span>
+            <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 font-medium">
+              Reconciliation Workbench
+            </span>
+            <span className="text-[11px] px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200 font-medium hidden sm:inline-block">
+              Track 4 Batch Engine
+            </span>
           </div>
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <button
             onClick={onSeedData}
             disabled={isLoading}
-            className="flex items-center gap-2 px-3.5 py-2 text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded-md transition-colors disabled:opacity-50 shadow-2xs"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? "animate-spin" : ""}`} />
+            <RefreshCw className={`h-3.5 w-3.5 text-slate-500 ${isLoading ? "animate-spin" : ""}`} />
             Seed Synthetic Batch
           </button>
 
           <button
             onClick={onRunBatch}
             disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-lg shadow-lg shadow-blue-600/25 transition-all disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-blue-700 hover:bg-blue-800 border border-blue-800 rounded-md transition-all disabled:opacity-50 shadow-2xs"
           >
             <Play className="h-3.5 w-3.5 fill-white" />
-            {isLoading ? "Reconciling..." : "Run Reconciliation"}
+            {isLoading ? "Executing Batch..." : "Run Reconciliation"}
           </button>
         </div>
       </div>

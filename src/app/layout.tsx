@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Savoneyy — AI Financial Controller",
-  description: "Autonomous Multi-Source Financial Reconciliation Engine & Audit Dashboard for Razorpay Buildathon",
+  title: "Savoneyy — Multi-Source Financial Reconciliation Workbench",
+  description: "Enterprise Financial Settlement & Audit Trail Controller (Razorpay Buildathon Track 4)",
 };
 
 export default function RootLayout({
@@ -12,8 +12,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className="antialiased min-h-screen bg-slate-950 text-slate-100 selection:bg-blue-500 selection:text-white">
+    <html lang="en">
+      <body className="antialiased min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
         {children}
       </body>
     </html>

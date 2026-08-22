@@ -1,5 +1,5 @@
 import React from "react";
-import { X, Sparkles, CheckCircle2, AlertTriangle, XCircle, FileText, ArrowRight } from "lucide-react";
+import { X, Sparkles, CheckCircle2, AlertTriangle, XCircle, FileText, Check, AlertCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
 interface AuditDetailModalProps {
@@ -17,20 +17,20 @@ export const AuditDetailModal: React.FC<AuditDetailModalProps> = ({ log, onClose
     switch (status) {
       case "matched":
         return (
-          <span className="badge-matched px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5">
+          <span className="badge-matched px-2.5 py-0.5 rounded text-xs font-semibold flex items-center gap-1">
             <CheckCircle2 className="h-3.5 w-3.5" /> Clean Match
           </span>
         );
       case "matched_with_variance":
         return (
-          <span className="badge-variance px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5">
+          <span className="badge-variance px-2.5 py-0.5 rounded text-xs font-semibold flex items-center gap-1">
             <AlertTriangle className="h-3.5 w-3.5" /> Matched with Variance
           </span>
         );
       case "exception":
       default:
         return (
-          <span className="badge-exception px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5">
+          <span className="badge-exception px-2.5 py-0.5 rounded text-xs font-semibold flex items-center gap-1">
             <XCircle className="h-3.5 w-3.5" /> Exception Unresolved
           </span>
         );
@@ -38,168 +38,170 @@ export const AuditDetailModal: React.FC<AuditDetailModalProps> = ({ log, onClose
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-none flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-white border border-slate-300 rounded-xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-xl overflow-hidden">
         {/* Modal Header */}
-        <div className="p-6 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
+        <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
           <div>
             <div className="flex items-center gap-3">
-              <h2 className="text-lg font-bold text-white">Record Audit Trace: {log.recordId}</h2>
+              <h2 className="text-base font-bold text-slate-900 font-sans">
+                Audit Record Worksheet: <span className="font-mono text-blue-700">{log.recordId}</span>
+              </h2>
               {getStatusBadge(log.status)}
             </div>
-            <p className="text-xs text-slate-400 mt-1">
-              Confidence Score: {(log.confidenceScore * 100).toFixed(0)}% • Batch ID: {log.batchId}
+            <p className="text-xs text-slate-500 mt-0.5 font-mono">
+              Confidence: {(log.confidenceScore * 100).toFixed(0)}% • Batch ID: {log.batchId}
             </p>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 overflow-y-auto space-y-6">
-          {/* Gemini AI Reasoning Banner */}
+        <div className="p-5 overflow-y-auto space-y-5">
+          {/* Gemini AI Reasoning Callout Box (Solid light blue, zero gradients) */}
           {log.geminiReasoning && (
-            <div className="p-4 rounded-xl bg-gradient-to-r from-indigo-950/80 via-slate-900 to-purple-950/80 border border-indigo-500/30">
-              <div className="flex items-center gap-2 mb-1 text-indigo-400 font-semibold text-xs">
-                <Sparkles className="h-4 w-4 text-purple-400" />
-                <span>Gemini AI Exception Diagnosis</span>
+            <div className="p-3.5 rounded-lg bg-blue-50/80 border border-blue-200">
+              <div className="flex items-center gap-1.5 mb-1 text-blue-900 font-bold text-xs">
+                <Sparkles className="h-4 w-4 text-blue-700" />
+                <span>Gemini AI Root-Cause Audit Diagnosis</span>
               </div>
-              <p className="text-sm text-slate-200 leading-relaxed font-normal">{log.geminiReasoning}</p>
+              <p className="text-xs text-slate-800 leading-relaxed font-medium">{log.geminiReasoning}</p>
             </div>
           )}
 
-          {/* 3-Way Source Comparison Grid */}
+          {/* 3-Way Disjointed Source Breakdown */}
           <div>
-            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
-              3-Way Disjointed Source Comparison
+            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5">
+              3-Way Source Record Comparison
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {/* Source 1: Gateway */}
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-bold text-blue-400">1. Payment Gateway</span>
-                  <span className="text-[10px] text-slate-400">Settlement Report</span>
+              <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
+                <div className="flex items-center justify-between mb-2.5 border-b border-slate-200 pb-2">
+                  <span className="text-xs font-bold text-blue-800">1. Payment Gateway</span>
+                  <span className="text-[10px] text-slate-500 font-medium">Settlement Report</span>
                 </div>
                 {gateway ? (
-                  <div className="space-y-2 text-xs">
+                  <div className="space-y-1.5 text-xs font-mono">
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Txn ID:</span>
-                      <span className="font-mono text-slate-200">{gateway.txnId}</span>
+                      <span className="text-slate-500 font-sans">Txn ID:</span>
+                      <span className="font-semibold text-slate-900">{gateway.txnId}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Order ID:</span>
-                      <span className="font-mono text-slate-200">{gateway.orderId}</span>
+                      <span className="text-slate-500 font-sans">Order ID:</span>
+                      <span className="text-slate-800">{gateway.orderId}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Gross Amount:</span>
-                      <span className="font-semibold text-slate-200">{formatCurrency(gateway.amount)}</span>
+                      <span className="text-slate-500 font-sans">Gross Amount:</span>
+                      <span className="text-slate-900">{formatCurrency(gateway.amount)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Fee Deducted:</span>
-                      <span className="text-red-400">{formatCurrency(gateway.fee)}</span>
+                      <span className="text-slate-500 font-sans">Fee Deducted:</span>
+                      <span className="text-red-700">{formatCurrency(gateway.fee)}</span>
                     </div>
-                    <div className="flex justify-between border-t border-slate-800 pt-1.5 font-semibold">
-                      <span className="text-slate-300">Net Settled:</span>
-                      <span className="text-emerald-400">{formatCurrency(gateway.settledAmount)}</span>
+                    <div className="flex justify-between border-t border-slate-200 pt-1 font-bold">
+                      <span className="text-slate-700 font-sans">Net Settled:</span>
+                      <span className="text-emerald-700">{formatCurrency(gateway.settledAmount)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Payout UTR:</span>
-                      <span className={`font-mono ${gateway.utr ? "text-slate-200" : "text-red-400 font-bold"}`}>
+                      <span className="text-slate-500 font-sans">Payout UTR:</span>
+                      <span className={gateway.utr ? "text-slate-900" : "text-red-700 font-bold"}>
                         {gateway.utr || "MISSING"}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Date:</span>
-                      <span className="text-slate-200">{gateway.settlementDate}</span>
+                      <span className="text-slate-500 font-sans">Date:</span>
+                      <span className="text-slate-800">{gateway.settlementDate}</span>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-xs text-red-400 py-6 text-center italic">No Gateway Record Found</div>
+                  <div className="text-xs text-red-600 py-6 text-center italic font-sans">No Gateway Settlement Record</div>
                 )}
               </div>
 
               {/* Source 2: Bank Statement */}
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-bold text-emerald-400">2. Bank Statement</span>
-                  <span className="text-[10px] text-slate-400">Credit Advice</span>
+              <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
+                <div className="flex items-center justify-between mb-2.5 border-b border-slate-200 pb-2">
+                  <span className="text-xs font-bold text-emerald-800">2. Bank Statement</span>
+                  <span className="text-[10px] text-slate-500 font-medium">Credit Advice</span>
                 </div>
                 {bank ? (
-                  <div className="space-y-2 text-xs">
+                  <div className="space-y-1.5 text-xs font-mono">
                     <div className="flex justify-between">
-                      <span className="text-slate-400">UTR:</span>
-                      <span className="font-mono text-slate-200">{bank.utr || "N/A"}</span>
+                      <span className="text-slate-500 font-sans">UTR Ref:</span>
+                      <span className="font-semibold text-slate-900">{bank.utr || "N/A"}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Credited Amount:</span>
-                      <span className="font-semibold text-emerald-400">{formatCurrency(bank.creditedAmount)}</span>
+                      <span className="text-slate-500 font-sans">Credited:</span>
+                      <span className="font-bold text-emerald-700">{formatCurrency(bank.creditedAmount)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Value Date:</span>
-                      <span className="text-slate-200">{bank.valueDate}</span>
+                      <span className="text-slate-500 font-sans">Value Date:</span>
+                      <span className="text-slate-800">{bank.valueDate}</span>
                     </div>
-                    <div className="border-t border-slate-800 pt-1.5">
-                      <span className="text-[10px] text-slate-400 block mb-1">Bank Description:</span>
-                      <p className="text-[11px] text-slate-300 font-mono truncate">{bank.description}</p>
+                    <div className="border-t border-slate-200 pt-1 mt-1">
+                      <span className="text-[10px] text-slate-500 font-sans block mb-0.5">Narration:</span>
+                      <p className="text-[11px] text-slate-700 truncate">{bank.description}</p>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-xs text-red-400 py-6 text-center italic">No Bank Credit Entry Found</div>
+                  <div className="text-xs text-red-600 py-6 text-center italic font-sans">No Bank Deposit Advice Found</div>
                 )}
               </div>
 
               {/* Source 3: Internal Ledger */}
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-bold text-purple-400">3. Internal Ledger</span>
-                  <span className="text-[10px] text-slate-400">Merchant ERP</span>
+              <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
+                <div className="flex items-center justify-between mb-2.5 border-b border-slate-200 pb-2">
+                  <span className="text-xs font-bold text-purple-800">3. Internal Ledger</span>
+                  <span className="text-[10px] text-slate-500 font-medium">Merchant ERP</span>
                 </div>
                 {ledger ? (
-                  <div className="space-y-2 text-xs">
+                  <div className="space-y-1.5 text-xs font-mono">
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Order ID:</span>
-                      <span className="font-mono text-slate-200">{ledger.orderId}</span>
+                      <span className="text-slate-500 font-sans">Order ID:</span>
+                      <span className="font-semibold text-slate-900">{ledger.orderId}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Expected Amount:</span>
-                      <span className="font-semibold text-slate-200">{formatCurrency(ledger.expectedAmount)}</span>
+                      <span className="text-slate-500 font-sans">Expected:</span>
+                      <span className="text-slate-900">{formatCurrency(ledger.expectedAmount)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Associated Txn:</span>
-                      <span className="font-mono text-slate-200">{ledger.txnId || "N/A"}</span>
+                      <span className="text-slate-500 font-sans">Linked Txn:</span>
+                      <span className="text-slate-800">{ledger.txnId || "N/A"}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Order Status:</span>
-                      <span className="text-slate-200">{ledger.status}</span>
+                      <span className="text-slate-500 font-sans">ERP Status:</span>
+                      <span className="text-slate-800">{ledger.status}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Order Date:</span>
-                      <span className="text-slate-200">{ledger.orderDate}</span>
+                      <span className="text-slate-500 font-sans">Order Date:</span>
+                      <span className="text-slate-800">{ledger.orderDate}</span>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-xs text-red-400 py-6 text-center italic">No Internal Ledger Entry Found</div>
+                  <div className="text-xs text-red-600 py-6 text-center italic font-sans">No ERP Order Entry Found</div>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Deterministic Rules Audit Trail & Ground Truth comparison */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Rules Fired */}
-            <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-              <h4 className="text-xs font-semibold text-slate-300 mb-2 flex items-center gap-1.5">
-                <FileText className="h-3.5 w-3.5 text-blue-400" />
-                Deterministic Rules Fired
+          {/* Audit Rule Log & Ground Truth Scoring */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {/* Rules Triggered */}
+            <div className="p-3.5 rounded-lg bg-white border border-slate-200">
+              <h4 className="text-xs font-bold text-slate-800 mb-2 flex items-center gap-1.5 font-sans">
+                <FileText className="h-3.5 w-3.5 text-slate-700" />
+                Matching Rules Fired
               </h4>
-              <ul className="space-y-1.5">
+              <ul className="space-y-1">
                 {log.rulesFired.map((rule: string, idx: number) => (
-                  <li key={idx} className="text-xs font-mono text-slate-300 bg-slate-900 px-2 py-1 rounded border border-slate-800">
+                  <li key={idx} className="text-[11px] font-mono text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
                     {rule}
                   </li>
                 ))}
@@ -207,21 +209,21 @@ export const AuditDetailModal: React.FC<AuditDetailModalProps> = ({ log, onClose
             </div>
 
             {/* Ground Truth Validation */}
-            <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-              <h4 className="text-xs font-semibold text-slate-300 mb-2">Ground Truth Verification</h4>
-              <div className="space-y-2 text-xs">
+            <div className="p-3.5 rounded-lg bg-white border border-slate-200 font-sans">
+              <h4 className="text-xs font-bold text-slate-800 mb-2">Ground Truth Scoring Audit</h4>
+              <div className="space-y-1.5 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Agent Decision:</span>
-                  <span className="font-semibold text-white">{log.status}</span>
+                  <span className="text-slate-500">Agent Classification:</span>
+                  <span className="font-semibold text-slate-900">{log.status}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Expected Ground Truth:</span>
-                  <span className="font-semibold text-indigo-400">{log.groundTruthStatus || "N/A"}</span>
+                  <span className="text-slate-500">Ground Truth Expected:</span>
+                  <span className="font-semibold text-blue-700">{log.groundTruthStatus || "N/A"}</span>
                 </div>
-                <div className="flex justify-between border-t border-slate-800 pt-2">
-                  <span className="text-slate-400">Result Accuracy:</span>
-                  <span className={`font-semibold ${log.isCorrect ? "text-emerald-400" : "text-red-400"}`}>
-                    {log.isCorrect ? "✅ Match (Correct)" : "❌ Misclassified"}
+                <div className="flex justify-between border-t border-slate-200 pt-1.5 mt-1">
+                  <span className="text-slate-600">Model Accuracy:</span>
+                  <span className={`font-bold ${log.isCorrect ? "text-emerald-700" : "text-red-700"}`}>
+                    {log.isCorrect ? "✅ Match (Accurate)" : "❌ Misclassified"}
                   </span>
                 </div>
               </div>
@@ -230,12 +232,12 @@ export const AuditDetailModal: React.FC<AuditDetailModalProps> = ({ log, onClose
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 border-t border-slate-800 bg-slate-900 flex justify-end">
+        <div className="p-3.5 border-t border-slate-200 bg-slate-50 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-xs font-semibold text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
+            className="px-4 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 rounded-md transition-colors shadow-2xs"
           >
-            Close Audit Drawer
+            Close Worksheet
           </button>
         </div>
       </div>

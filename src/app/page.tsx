@@ -5,7 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { MetricCards } from "@/components/MetricCards";
 import { DiscrepancyMatrixCard } from "@/components/DiscrepancyMatrixCard";
 import { AuditDetailModal } from "@/components/AuditDetailModal";
-import { Search, Filter, CheckCircle2, AlertTriangle, XCircle, ArrowUpRight, Sparkles } from "lucide-react";
+import { Search, CheckCircle2, AlertTriangle, XCircle, ChevronRight, Sparkles, SlidersHorizontal } from "lucide-react";
 
 export default function Home() {
   const [metrics, setMetrics] = useState<any>(null);
@@ -80,88 +80,88 @@ export default function Home() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
       <Navbar onRunBatch={handleRunBatch} onSeedData={handleSeedData} isLoading={isLoading} />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header Hero Section */}
-        <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Header Title Section (Flat, clean, zero gradients) */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Multi-Source Settlement & Reconciliation Agent
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+              Multi-Source Financial Settlement & Reconciliation Controller
             </h1>
-            <p className="text-sm text-slate-400 mt-1">
-              Automated 3-way matching across Payment Gateway Payouts, Bank Accounts, and Merchant ERP Ledgers.
+            <p className="text-xs text-slate-600 mt-0.5">
+              Supervised 3-way automated matching engine across Gateway Payout Reports, Bank Credit Advices, and Merchant ERP Ledgers.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 bg-slate-900/90 px-3 py-1.5 rounded-lg border border-slate-800 self-start md:self-auto">
-            <Sparkles className="h-4 w-4 text-purple-400" />
-            <span className="text-xs text-slate-300 font-medium">Gemini AI Exception Reasoning Active</span>
+          <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-md border border-slate-300 shadow-2xs self-start sm:self-auto">
+            <Sparkles className="h-4 w-4 text-blue-700" />
+            <span className="text-xs text-slate-800 font-semibold">Gemini AI Exception Reasoner Active</span>
           </div>
         </div>
 
-        {/* Metrics Overview */}
+        {/* Metrics Overview Cards */}
         <MetricCards metrics={metrics} />
 
-        {/* Discrepancy Matrix */}
+        {/* Ground Truth Discrepancy Matrix */}
         <DiscrepancyMatrixCard matrix={metrics?.discrepancyMatrix || null} />
 
-        {/* Audit Table Section */}
-        <div className="glass-panel rounded-2xl overflow-hidden shadow-xl border border-slate-800">
+        {/* Audit Table Workbench */}
+        <div className="bg-white rounded-lg border border-slate-200 shadow-xs overflow-hidden">
           {/* Table Toolbar */}
-          <div className="p-4 sm:p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/60">
+          <div className="p-3.5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50">
             <div className="flex items-center gap-2">
-              <h2 className="text-base font-bold text-white">Reconciliation Audit Trail</h2>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-mono">
+              <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Reconciliation Audit Trail</h2>
+              <span className="text-xs px-2 py-0.5 rounded bg-white text-slate-700 font-mono border border-slate-200">
                 {filteredLogs.length} records
               </span>
             </div>
 
             {/* Controls: Search & Filter */}
-            <div className="flex flex-wrap items-center gap-3">
-              {/* Search Bar */}
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Search Box */}
               <div className="relative">
-                <Search className="h-4 w-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Search className="h-3.5 w-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="Search Txn ID, UTR, Order..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-4 py-1.5 text-xs bg-slate-950 border border-slate-800 rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500 w-48 sm:w-64"
+                  className="pl-8 pr-3 py-1 text-xs bg-white border border-slate-300 rounded text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 w-44 sm:w-60 shadow-2xs"
                 />
               </div>
 
-              {/* Status Filter */}
-              <div className="flex items-center gap-1.5 bg-slate-950 p-1 rounded-lg border border-slate-800">
+              {/* Status Filter Buttons */}
+              <div className="flex items-center gap-1 bg-white p-0.5 rounded border border-slate-300">
                 <button
                   onClick={() => setStatusFilter("all")}
-                  className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
-                    statusFilter === "all" ? "bg-slate-800 text-white" : "text-slate-400 hover:text-slate-200"
+                  className={`px-2 py-0.5 text-xs rounded font-medium transition-colors ${
+                    statusFilter === "all" ? "bg-slate-900 text-white" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                   }`}
                 >
                   All
                 </button>
                 <button
                   onClick={() => setStatusFilter("matched")}
-                  className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
-                    statusFilter === "matched" ? "bg-emerald-500/20 text-emerald-400" : "text-slate-400 hover:text-slate-200"
+                  className={`px-2 py-0.5 text-xs rounded font-medium transition-colors ${
+                    statusFilter === "matched" ? "bg-emerald-100 text-emerald-800 font-semibold" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                   }`}
                 >
                   Clean
                 </button>
                 <button
                   onClick={() => setStatusFilter("matched_with_variance")}
-                  className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
-                    statusFilter === "matched_with_variance" ? "bg-amber-500/20 text-amber-400" : "text-slate-400 hover:text-slate-200"
+                  className={`px-2 py-0.5 text-xs rounded font-medium transition-colors ${
+                    statusFilter === "matched_with_variance" ? "bg-amber-100 text-amber-800 font-semibold" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                   }`}
                 >
                   Variance
                 </button>
                 <button
                   onClick={() => setStatusFilter("exception")}
-                  className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
-                    statusFilter === "exception" ? "bg-red-500/20 text-red-400" : "text-slate-400 hover:text-slate-200"
+                  className={`px-2 py-0.5 text-xs rounded font-medium transition-colors ${
+                    statusFilter === "exception" ? "bg-red-100 text-red-800 font-semibold" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                   }`}
                 >
                   Exceptions
@@ -170,74 +170,74 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Records Table */}
+          {/* Audit Records Data Table */}
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-950/80 uppercase text-[10px] font-semibold tracking-wider text-slate-400 border-b border-slate-800">
+            <table className="w-full text-left text-xs text-slate-800">
+              <thead className="bg-slate-100 uppercase text-[10px] font-bold tracking-wider text-slate-600 border-b border-slate-200">
                 <tr>
-                  <th className="py-3 px-4">Record ID</th>
-                  <th className="py-3 px-4">Txn ID / Order ID</th>
-                  <th className="py-3 px-4">UTR Reference</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Confidence</th>
-                  <th className="py-3 px-4">Gemini AI Diagnosis</th>
-                  <th className="py-3 px-4 text-right">Audit</th>
+                  <th className="py-2.5 px-3.5">Record ID</th>
+                  <th className="py-2.5 px-3.5">Txn ID / Order ID</th>
+                  <th className="py-2.5 px-3.5">Bank UTR Ref</th>
+                  <th className="py-2.5 px-3.5">Classification</th>
+                  <th className="py-2.5 px-3.5">Confidence</th>
+                  <th className="py-2.5 px-3.5">Gemini AI Audit Diagnosis</th>
+                  <th className="py-2.5 px-3.5 text-right">Worksheet</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 bg-slate-900/30">
+              <tbody className="divide-y divide-slate-200 bg-white">
                 {filteredLogs.length > 0 ? (
                   filteredLogs.map((log) => (
                     <tr
                       key={log.id}
                       onClick={() => setSelectedLog(log)}
-                      className="hover:bg-slate-800/40 cursor-pointer transition-colors group"
+                      className="hover:bg-slate-50 cursor-pointer transition-colors group"
                     >
-                      <td className="py-3 px-4 font-mono font-bold text-white">{log.recordId}</td>
-                      <td className="py-3 px-4">
-                        <span className="font-mono text-slate-200 block">{log.txnId || "N/A"}</span>
-                        <span className="text-[10px] text-slate-400 font-mono block">{log.orderId || "N/A"}</span>
+                      <td className="py-2.5 px-3.5 font-mono font-bold text-slate-900">{log.recordId}</td>
+                      <td className="py-2.5 px-3.5">
+                        <span className="font-mono text-slate-900 block font-medium">{log.txnId || "N/A"}</span>
+                        <span className="text-[10px] text-slate-500 font-mono block">{log.orderId || "N/A"}</span>
                       </td>
-                      <td className="py-3 px-4 font-mono">
+                      <td className="py-2.5 px-3.5 font-mono">
                         {log.utr ? (
-                          <span className="text-slate-300">{log.utr}</span>
+                          <span className="text-slate-800">{log.utr}</span>
                         ) : (
-                          <span className="text-red-400 font-semibold italic">MISSING UTR</span>
+                          <span className="text-red-700 font-semibold italic">MISSING UTR</span>
                         )}
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-2.5 px-3.5">
                         {log.status === "matched" && (
-                          <span className="badge-matched px-2 py-0.5 rounded-full text-[11px] font-medium inline-flex items-center gap-1">
+                          <span className="badge-matched px-2 py-0.5 rounded text-[11px] font-semibold inline-flex items-center gap-1">
                             <CheckCircle2 className="h-3 w-3" /> Matched
                           </span>
                         )}
                         {log.status === "matched_with_variance" && (
-                          <span className="badge-variance px-2 py-0.5 rounded-full text-[11px] font-medium inline-flex items-center gap-1">
+                          <span className="badge-variance px-2 py-0.5 rounded text-[11px] font-semibold inline-flex items-center gap-1">
                             <AlertTriangle className="h-3 w-3" /> Variance
                           </span>
                         )}
                         {log.status === "exception" && (
-                          <span className="badge-exception px-2 py-0.5 rounded-full text-[11px] font-medium inline-flex items-center gap-1">
+                          <span className="badge-exception px-2 py-0.5 rounded text-[11px] font-semibold inline-flex items-center gap-1">
                             <XCircle className="h-3 w-3" /> Exception
                           </span>
                         )}
                       </td>
-                      <td className="py-3 px-4 font-medium text-slate-200">
+                      <td className="py-2.5 px-3.5 font-mono font-semibold text-slate-800">
                         {(log.confidenceScore * 100).toFixed(0)}%
                       </td>
-                      <td className="py-3 px-4 max-w-xs truncate text-slate-300 font-normal">
+                      <td className="py-2.5 px-3.5 max-w-xs truncate text-slate-700 font-normal">
                         {log.geminiReasoning || "—"}
                       </td>
-                      <td className="py-3 px-4 text-right">
-                        <button className="p-1.5 rounded bg-slate-800 text-slate-300 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                          <ArrowUpRight className="h-3.5 w-3.5" />
+                      <td className="py-2.5 px-3.5 text-right">
+                        <button className="p-1 rounded bg-slate-100 text-slate-600 group-hover:bg-blue-700 group-hover:text-white transition-colors">
+                          <ChevronRight className="h-3.5 w-3.5" />
                         </button>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-slate-500">
-                      No reconciliation records match the selected query. Click "Run Reconciliation" or "Seed Synthetic Batch" to start.
+                    <td colSpan={7} className="py-10 text-center text-slate-500">
+                      No reconciliation records match the query. Click "Run Reconciliation" or "Seed Synthetic Batch" to process data.
                     </td>
                   </tr>
                 )}
@@ -248,11 +248,11 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 py-4 text-center text-xs text-slate-500">
-        Savoneyy AI Finance Controller • Built for Razorpay AI Buildathon (Track 4)
+      <footer className="border-t border-slate-200 bg-white py-3 text-center text-xs text-slate-500">
+        Savoneyy AI Finance Controller • Razorpay AI Buildathon (Track 4)
       </footer>
 
-      {/* Audit Detail Modal Drawer */}
+      {/* Detailed Audit Worksheet Modal */}
       <AuditDetailModal log={selectedLog} onClose={() => setSelectedLog(null)} />
     </div>
   );
