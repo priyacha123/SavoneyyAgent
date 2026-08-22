@@ -119,7 +119,7 @@ export default function LandingPage() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
-            href="/dashboard"
+            href="/sign-up"
             className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-blue-700 hover:bg-blue-800 border border-blue-800 transition-all"
           >
             Open Dashboard <ArrowRight className="h-4 w-4" />
@@ -264,7 +264,7 @@ export default function LandingPage() {
             Start processing settlements today. No infrastructure to manage, no Excel sheets, no more manual exception hunting.
           </p>
           <Link
-            href="/dashboard"
+            href="/sign-up"
             className="inline-flex items-center gap-2 px-7 py-2.5 text-sm font-bold text-slate-900 bg-white hover:bg-slate-100 border border-white transition-all"
           >
             Open Dashboard <ArrowRight className="h-4 w-4" />

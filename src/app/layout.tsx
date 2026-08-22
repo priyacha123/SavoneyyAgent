@@ -19,15 +19,6 @@ export default function RootLayout({
     <ClerkProvider
       publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
       appearance={{
-        variables: {
-          colorPrimary: '#0f172a',
-          colorBackground: '#ffffff',
-          colorTextOnPrimaryBackground: '#ffffff',
-          colorInputBackground: '#ffffff',
-          colorInputText: '#0f172a',
-          borderRadius: '0.5rem',
-          fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-        },
         elements: {
           formButtonPrimary: 'bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold',
           footerActionLink: 'text-blue-700 hover:text-blue-800',
