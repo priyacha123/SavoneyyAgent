@@ -152,8 +152,22 @@ export default function BillingPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ planId: plan.id }),
       });
+
       const orderData = await orderRes.json();
+
+      if (!orderData.success) {
+        setErrorMsg(orderData.error || "Failed to initiate subscription. Please try again.");
+        setPayingPlan(null);
+        return;
+      }
+
       const sub = orderData.subscription || orderData.order;
+
+      if (!sub || !sub.id) {
+        setErrorMsg("Invalid response from payment gateway. Please try again.");
+        setPayingPlan(null);
+        return;
+      }
 
       // Simulation mode — if keys not configured
       if (sub?.isSimulated) {
@@ -172,41 +186,42 @@ export default function BillingPage() {
 
       const options: any = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: plan.price,
+        subscription_id: sub.id,
         currency: "INR",
         name: "Savoneyy AI Finance Controller",
         description: `${plan.name} Plan — Monthly Subscription`,
-        handler: async (response: any) => {
-          const verifyRes = await fetch("/api/razorpay/verify-payment", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              razorpayOrderId: response.razorpay_order_id,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature,
-              razorpaySubscriptionId: response.razorpay_subscription_id,
-              planId: plan.id,
-            }),
-          });
-          const verifyData = await verifyRes.json();
-          if (verifyData.success) {
-            setSuccessMsg(`Payment verified! ${plan.name} plan is now active.`);
-            const subRes = await fetch("/api/razorpay/subscription");
-            const subData = await subRes.json();
-            setSubscription(subData.subscription || null);
-          } else {
-            setErrorMsg("Payment verification failed. Contact support.");
-          }
-        },
         prefill: { name: "Savoneyy User", email: "user@savoneyy.com" },
         theme: { color: "#1d4ed8" },
         modal: { ondismiss: () => setPayingPlan(null) },
+        handler: async (response: any) => {
+          try {
+            const verifyRes = await fetch("/api/razorpay/verify-payment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpayOrderId: response.razorpay_order_id || null,
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpaySignature: response.razorpay_signature,
+                razorpaySubscriptionId: response.razorpay_subscription_id,
+                planId: plan.id,
+              }),
+            });
+            const verifyData = await verifyRes.json();
+            if (verifyData.success) {
+              setSuccessMsg(`Payment verified! ${plan.name} plan is now active.`);
+              const subRes = await fetch("/api/razorpay/subscription");
+              const subData = await subRes.json();
+              setSubscription(subData.subscription || null);
+            } else {
+              setErrorMsg("Payment verification failed. Contact support.");
+            }
+          } catch (e: any) {
+            setErrorMsg("Payment verification failed. Contact support.");
+          }
+        },
       };
 
-      if (sub?.id) {
-        options.subscription_id = sub.id;
-      }
-      if (sub?.id && !sub.isSimulated) {
+      if (sub && !sub.isSimulated) {
         options.order_id = sub.id;
       }
 

@@ -125,17 +125,16 @@ export async function createRazorpaySubscription(planId: string) {
   const amountInPaise = plan.price * 100;
   const instance = getRazorpayInstance();
 
-  if (instance && razorpayPlanId) {
+  if (!razorpayPlanId) {
+    throw new Error(`Razorpay plan ID not configured for plan: ${planId}`);
+  }
+
+  if (instance) {
     try {
       const subscription = await instance.subscriptions.create({
         plan_id: razorpayPlanId,
-        total_count: 0,
-        start_at: Math.floor(Date.now() / 1000) + 3600,
-        notes: {
-          planId: plan.id,
-          planName: plan.name,
-          amount: String(plan.price),
-        },
+        total_count: 1200,
+        start_at: Math.floor(Date.now() / 1000) + 60,
       });
 
       return {
