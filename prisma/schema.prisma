@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// 1. Payment Gateway Settlement Record (e.g. Razorpay Settlement Report)
+model GatewaySettlement {
+  id             String   @id @default(uuid())
+  recordId       String   @unique // Correlation ID (e.g. REC-001)
+  txnId          String   // Gateway transaction ID (e.g. pay_N1x892a)
+  orderId        String   // Merchant order ID (e.g. ord_77192)
+  amount         Float    // Transaction total amount
+  fee            Float    // Gateway fee deducted
+  settledAmount  Float    // Net settled amount (amount - fee)
+  utr            String?  // Unique Transaction Reference (bank payout ref)
+  settlementDate String   // ISO date string
+  createdAt      DateTime @default(now())
+}
+
+// 2. Bank Statement Record (Bank Account Feed)
+model BankStatement {
+  id             String   @id @default(uuid())
+  recordId       String?  // Optional correlation ID
+  utr            String?  // UTR number from bank credit advice
+  creditedAmount Float    // Amount credited to bank account
+  valueDate      String   // Value date of credit
+  description    String   // Bank narration / remark
+  createdAt      DateTime @default(now())
+}
+
+// 3. Internal Ledger Entry (Merchant's Internal System)
+model LedgerEntry {
+  id             String   @id @default(uuid())
+  recordId       String   @unique // Correlation ID
+  orderId        String   // Internal Order ID
+  txnId          String?  // Associated payment transaction ID
+  expectedAmount Float    // Amount expected from order
+  orderDate      String   // Order placement date
+  status         String   // e.g., PAID, PENDING, CANCELLED
+  createdAt      DateTime @default(now())
+}
+
+// 4. Ground Truth Label Table (Used strictly for scoring/evaluation against real answer)
+model GroundTruthLabel {
+  id              String   @id @default(uuid())
+  recordId        String   @unique // Correlation ID
+  txnId           String?
+  orderId         String?
+  utr             String?
+  expectedStatus  String   // "matched" | "matched_with_variance" | "exception"
+  discrepancyType String?  // null | "amount_mismatch" | "missing_utr" | "duplicate" | "timing_gap" | "unmatched"
+  varianceAmount  Float?   // Known injected variance if any
+  notes           String?  // Human explanation of ground truth
+  createdAt       DateTime @default(now())
+}
+
+// 5. Audit Log Entry (Detailed decision trail for every record processed by agent)
+model ReconciliationLog {
+  id                 String   @id @default(uuid())
+  batchId            String   // Identifier for reconciliation run
+  recordId           String   // Correlation ID
+  txnId              String?
+  orderId            String?
+  utr                String?
+  status             String   // "matched" | "matched_with_variance" | "exception"
+  confidenceScore    Float    // 0.0 to 1.0 confidence
+  rulesFired         String   // JSON string array of rule names applied
+  candidateRecords   String   // JSON string of inputs from 3 sources
+  geminiReasoning    String?  // Plain-English AI root cause analysis
+  groundTruthStatus  String?  // Ground truth status for comparison
+  isCorrect          Boolean? // Was agent prediction equal to ground truth?
+  createdAt          DateTime @default(now())
+}
+
+// 6. Reconciliation Summary Metrics (Overall batch run metrics)
+model ReconciliationMetrics {
+  id                String   @id @default(uuid())
+  batchId           String   @unique
+  totalRecords      Int
+  matchedCount      Int
+  varianceCount     Int
+  exceptionCount    Int
+  matchRate         Float    // Percentage (0-100)
+  precision         Float    // Percentage (0-100)
+  recall            Float    // Percentage (0-100)
+  falsePositiveRate Float    // Percentage (0-100)
+  f1Score           Float    // Percentage (0-100)
+  discrepancyMatrix String   // JSON string breakdown by discrepancy type
+  runTimestamp      DateTime @default(now())
+}
