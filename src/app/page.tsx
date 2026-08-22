@@ -17,6 +17,7 @@ import {
   Mail,
   Heart,
 } from "lucide-react";
+import { AuthButtons } from "@/components/auth/AuthButtons";
 
 export default function LandingPage() {
   const features = [
@@ -93,12 +94,7 @@ export default function LandingPage() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <Link
-              href="/dashboard"
-              className="px-4 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-700 border border-slate-900 transition-colors"
-            >
-              Open Dashboard →
-            </Link>
+            <AuthButtons />
           </div>
         </div>
       </header>

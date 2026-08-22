@@ -7,6 +7,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { MobileDrawer } from "@/components/MobileDrawer";
 import { Footer } from "@/components/Footer";
 import { Menu, CreditCard, ChevronRight } from "lucide-react";
+import { UserButton } from "@clerk/nextjs";
 
 const BREADCRUMB_MAP: Record<string, string> = {
   "/dashboard": "Reconciliation Workbench",
@@ -67,7 +68,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
           </div>
 
-          {/* Header Right: Plan Badge */}
+          {/* Header Right: Plan Badge + User */}
           <div className="flex items-center gap-3">
             <Link
               href="/dashboard/billing"
@@ -78,6 +79,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <span className="hidden sm:inline">PRO Plan</span>
               <span className="sm:hidden">PRO</span>
             </Link>
+            <UserButton />
           </div>
         </header>
 

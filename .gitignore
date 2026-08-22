@@ -43,3 +43,6 @@ Thumbs.db
 
 # package manager lock files
 package-lock.json
+
+# agents
+.agents

@@ -3,7 +3,7 @@
 import { SignIn } from '@clerk/nextjs';
 import { ShieldCheck } from 'lucide-react';
 
-export default function LoginPage() {
+export default function SignInPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
       <div className="w-full max-w-md">
@@ -19,20 +19,9 @@ export default function LoginPage() {
         </div>
         <div className="bg-white rounded-xl border border-slate-200 shadow-lg p-6">
           <SignIn
-            appearance={{
-              elements: {
-                rootBox: 'mx-auto',
-                card: 'shadow-none border-0',
-                formButtonPrimary: 'bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold',
-                footerActionLink: 'text-blue-700 hover:text-blue-800',
-                formFieldInput: 'rounded-lg border-slate-300 text-sm',
-                identityPreviewText: 'text-sm',
-                formFieldLabel: 'text-xs font-semibold text-slate-700',
-              },
-            }}
             routing="path"
-            path="/login"
-            signUpUrl="/signup"
+            path="/sign-in"
+            signUpUrl="/sign-up"
           />
         </div>
         <p className="text-center text-xs text-slate-400 mt-6">
