@@ -58,6 +58,12 @@ export const PRICING_PLANS: PricingPlan[] = [
   },
 ];
 
+export const PLAN_ID_MAP: Record<string, string> = {
+  starter: process.env.RAZORPAY_STARTER_PLAN_ID || "",
+  pro: process.env.RAZORPAY_PRO_PLAN_ID || "",
+  enterprise: process.env.RAZORPAY_ENTERPRISE_PLAN_ID || "",
+};
+
 // Initialize Razorpay SDK instance
 export function getRazorpayInstance(): Razorpay | null {
   const keyId = process.env.RAZORPAY_KEY_ID;
@@ -110,21 +116,74 @@ export async function createRazorpayOrder(planId: string) {
   };
 }
 
-// Verify Razorpay Payment Signature
+// Create Razorpay Subscription using plan IDs from .env
+export async function createRazorpaySubscription(planId: string) {
+  const plan = PRICING_PLANS.find((p) => p.id === planId);
+  if (!plan) throw new Error("Invalid plan selected");
+
+  const razorpayPlanId = PLAN_ID_MAP[planId];
+  const amountInPaise = plan.price * 100;
+  const instance = getRazorpayInstance();
+
+  if (instance && razorpayPlanId) {
+    try {
+      const subscription = await instance.subscriptions.create({
+        plan_id: razorpayPlanId,
+        total_count: 0,
+        start_at: Math.floor(Date.now() / 1000) + 3600,
+        notes: {
+          planId: plan.id,
+          planName: plan.name,
+          amount: String(plan.price),
+        },
+      });
+
+      return {
+        id: subscription.id,
+        planId: plan.id,
+        planName: plan.name,
+        amount: amountInPaise,
+        currency: "INR",
+        status: subscription.status,
+        isSimulated: false,
+      };
+    } catch (err: any) {
+      console.error("Razorpay subscription creation failed:", err);
+      throw new Error(err?.description || "Failed to create Razorpay subscription");
+    }
+  }
+
+  // Fallback simulated subscription for testing/demo without live credentials
+  return {
+    id: `sub_rzp_${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
+    planId: plan.id,
+    planName: plan.name,
+    amount: amountInPaise,
+    currency: "INR",
+    status: "created",
+    isSimulated: true,
+  };
+}
+
+// Verify Razorpay Payment Signature (supports both order and subscription payments)
 export function verifyRazorpaySignature(
-  orderId: string,
+  orderId: string | undefined,
   paymentId: string,
-  signature: string
+  signature: string,
+  subscriptionId?: string
 ): boolean {
   const keySecret = process.env.RAZORPAY_KEY_SECRET;
   if (!keySecret || keySecret.includes("demo")) {
-    // Demo verification pass
     return true;
   }
 
+  const payload = subscriptionId
+    ? `${subscriptionId}|${paymentId}`
+    : `${orderId}|${paymentId}`;
+
   const generatedSignature = crypto
     .createHmac("sha256", keySecret)
-    .update(`${orderId}|${paymentId}`)
+    .update(payload)
     .digest("hex");
 
   return generatedSignature === signature;

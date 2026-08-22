@@ -1,23 +1,22 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 
 export async function GET() {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
     const subscription = await prisma.userSubscription.findFirst({
-      where: { userId: "usr_default" },
+      where: { userId },
       orderBy: { createdAt: "desc" },
     });
 
     return NextResponse.json({
       success: true,
-      subscription: subscription || {
-        planId: "pro",
-        planName: "Pro Plan (Trial)",
-        status: "active",
-        amount: 2999,
-        currency: "INR",
-        currentPeriodEnd: new Date(Date.now() + 30 * 86400 * 1000).toISOString(),
-      },
+      subscription: subscription || null,
     });
   } catch (error: any) {
     console.error("Error fetching user subscription:", error);

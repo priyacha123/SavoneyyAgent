@@ -11,6 +11,7 @@ async function main() {
   await prisma.bankStatement.deleteMany({});
   await prisma.ledgerEntry.deleteMany({});
   await prisma.groundTruthLabel.deleteMany({});
+  await prisma.userSubscription.deleteMany({});
 
   console.log("🎲 Generating 60 synthetic records across Gateway, Bank, and Ledger with ground truth...");
   const dataset = generateSyntheticDataset(60);

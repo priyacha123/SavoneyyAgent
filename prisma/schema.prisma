@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // 1. Payment Gateway Settlement Record (e.g. Razorpay Settlement Report)
@@ -95,19 +95,20 @@ model ReconciliationMetrics {
 
 // 7. User Subscription Model (Razorpay Billing System)
 model UserSubscription {
-  id                String   @id @default(uuid())
-  userId            String   @default("usr_default")
-  planId            String   // "starter" | "pro" | "enterprise"
-  planName          String   // "Starter Plan" | "Pro Plan" | "Enterprise Plan"
-  status            String   // "active" | "canceled" | "past_due"
-  amount            Float    // Amount in INR
-  currency          String   @default("INR")
-  razorpayOrderId   String?  // Razorpay order ID (e.g. order_9A33X5)
-  razorpayPaymentId String?  // Razorpay payment ID (e.g. pay_2910AA)
-  razorpaySignature String?  // Signature for verification
-  currentPeriodEnd  DateTime
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id                     String    @id @default(uuid())
+  userId                 String    @default("usr_default")
+  planId                 String    // "starter" | "pro" | "enterprise"
+  planName               String    // "Starter Plan" | "Pro Plan" | "Enterprise Plan"
+  status                 String    // "active" | "canceled" | "past_due" | "pending"
+  amount                 Float     // Amount in INR
+  currency               String    @default("INR")
+  razorpayOrderId        String?   // Razorpay order ID (e.g. order_9A33X5)
+  razorpayPaymentId      String?   // Razorpay payment ID (e.g. pay_2910AA)
+  razorpaySignature      String?   // Signature for verification
+  razorpaySubscriptionId String?   // Razorpay subscription ID (e.g. sub_9A33X5)
+  currentPeriodEnd       DateTime
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
 }
 
 // 8. Reconciliation Engine Rule Settings

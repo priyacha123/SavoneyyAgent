@@ -82,7 +82,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-4 sm:p-6 max-w-7xl w-full mx-auto">{children}</main>
+        <main className="flex-1 p-4 sm:p-6 max-w-[90%] w-full mx-auto">{children}</main>
 
         {/* Footer */}
         <Footer />

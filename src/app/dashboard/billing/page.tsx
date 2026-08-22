@@ -88,10 +88,13 @@ const PLANS: Plan[] = [
 ];
 
 interface Subscription {
-  plan: string;
+  planId: string;
+  planName: string;
   status: string;
   nextBilling: string | null;
   orderId: string | null;
+  subscriptionId: string | null;
+  amount: number;
 }
 
 function loadRazorpayScript(): Promise<boolean> {
@@ -115,7 +118,22 @@ export default function BillingPage() {
   useEffect(() => {
     fetch("/api/razorpay/subscription")
       .then((r) => r.json())
-      .then((d) => setSubscription(d.subscription || null))
+      .then((d) => {
+        const sub = d.subscription;
+        if (sub) {
+          setSubscription({
+            planId: sub.planId || sub.plan,
+            planName: sub.planName || sub.plan,
+            status: sub.status,
+            nextBilling: sub.currentPeriodEnd || sub.nextBilling,
+            orderId: sub.razorpayOrderId || sub.orderId,
+            subscriptionId: sub.razorpaySubscriptionId || sub.subscriptionId,
+            amount: sub.amount,
+          });
+        } else {
+          setSubscription(null);
+        }
+      })
       .catch(() => setSubscription(null))
       .finally(() => setIsLoading(false));
   }, []);
@@ -128,18 +146,19 @@ export default function BillingPage() {
     try {
       const loaded = await loadRazorpayScript();
 
-      // Create Razorpay order via backend
+      // Create Razorpay subscription via backend
       const orderRes = await fetch("/api/razorpay/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planId: plan.id, amount: plan.price }),
+        body: JSON.stringify({ planId: plan.id }),
       });
       const orderData = await orderRes.json();
+      const sub = orderData.subscription || orderData.order;
 
       // Simulation mode — if keys not configured
-      if (orderData.simulation) {
+      if (sub?.isSimulated) {
         setSuccessMsg(
-          `[SIMULATION] Plan "${plan.name}" purchase simulated. Order ID: ${orderData.orderId}. No real charge made.`
+          `[SIMULATION] Plan "${plan.name}" purchase simulated. Subscription ID: ${sub.id}. No real charge made.`
         );
         setPayingPlan(null);
         return;
@@ -151,23 +170,27 @@ export default function BillingPage() {
         return;
       }
 
-      const options = {
-        key: orderData.keyId,
-        amount: orderData.amount,
-        currency: orderData.currency || "INR",
+      const options: any = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: plan.price,
+        currency: "INR",
         name: "Savoneyy AI Finance Controller",
         description: `${plan.name} Plan — Monthly Subscription`,
-        order_id: orderData.orderId,
         handler: async (response: any) => {
           const verifyRes = await fetch("/api/razorpay/verify-payment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...response, planId: plan.id }),
+            body: JSON.stringify({
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+              razorpaySubscriptionId: response.razorpay_subscription_id,
+              planId: plan.id,
+            }),
           });
           const verifyData = await verifyRes.json();
           if (verifyData.success) {
             setSuccessMsg(`Payment verified! ${plan.name} plan is now active.`);
-            // Refresh subscription state
             const subRes = await fetch("/api/razorpay/subscription");
             const subData = await subRes.json();
             setSubscription(subData.subscription || null);
@@ -179,6 +202,13 @@ export default function BillingPage() {
         theme: { color: "#1d4ed8" },
         modal: { ondismiss: () => setPayingPlan(null) },
       };
+
+      if (sub?.id) {
+        options.subscription_id = sub.id;
+      }
+      if (sub?.id && !sub.isSimulated) {
+        options.order_id = sub.id;
+      }
 
       const rzp = new window.Razorpay(options);
       rzp.open();
@@ -205,11 +235,12 @@ export default function BillingPage() {
           <ShieldCheck className="h-5 w-5 text-blue-700 shrink-0" />
           <div className="flex-1">
             <p className="text-xs font-bold text-blue-900 uppercase tracking-wider">
-              Active Subscription — {subscription.plan} Plan
+              Active Subscription — {subscription.planName}
             </p>
             <p className="text-[11px] text-blue-700 font-mono mt-0.5">
               Status: {subscription.status}
               {subscription.orderId ? ` · Order: ${subscription.orderId}` : ""}
+              {subscription.subscriptionId ? ` · Subscription: ${subscription.subscriptionId}` : ""}
               {subscription.nextBilling ? ` · Renews: ${new Date(subscription.nextBilling).toLocaleDateString()}` : ""}
             </p>
           </div>
@@ -237,7 +268,7 @@ export default function BillingPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {PLANS.map((plan) => {
           const Icon = plan.icon;
-          const isCurrent = subscription?.plan?.toLowerCase() === plan.id;
+          const isCurrent = subscription?.planId?.toLowerCase() === plan.id;
           const isPaying = payingPlan === plan.id;
 
           return (
