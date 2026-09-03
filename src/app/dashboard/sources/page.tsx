@@ -55,6 +55,12 @@ export default function SourcesPage() {
   const syncing = sources.filter((s) => s.status === "syncing").length;
   const disconnected = sources.filter((s) => s.status === "disconnected").length;
   const totalRecords = sources.reduce((sum, s) => sum + s.recordCount, 0);
+  const summaryValues: Record<string, string> = {
+    Connected: connected.toString(),
+    Syncing: syncing.toString(),
+    Disconnected: disconnected.toString(),
+    "Total Records": totalRecords.toLocaleString(),
+  };
 
   return (
     <div className="space-y-5">
@@ -71,14 +77,18 @@ export default function SourcesPage() {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {DEFAULT_SETTINGS.map((item) => (
-          <div key={item.label} className="bg-white border border-slate-200 rounded-lg p-4 shadow-2xs">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{item.label}</span>
-              <item.icon className={`h-4 w-4 ${item.color}`} />
+          <div key={item.label} className="min-w-0 bg-white border border-slate-200 rounded-lg p-3 sm:p-4 shadow-2xs">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <span className="min-w-0 text-[9px] sm:text-[10px] leading-4 font-bold uppercase tracking-wider text-slate-500">
+                {item.label}
+              </span>
+              <item.icon className={`h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0 ${item.color}`} />
             </div>
-            <p className={`text-2xl font-bold font-mono ${item.color}`}>{item.value}</p>
+            <p className={`truncate text-lg sm:text-xl font-bold font-mono ${item.color}`}>
+              {summaryValues[item.label]}
+            </p>
           </div>
         ))}
       </div>

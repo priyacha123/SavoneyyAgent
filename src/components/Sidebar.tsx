@@ -14,7 +14,7 @@ export const Sidebar: React.FC = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-white border-r border-slate-200 flex flex-col justify-between h-screen sticky top-0 md:flex shrink-0">
+    <aside className="hidden w-64 bg-white border-r border-slate-200 md:flex md:flex-col justify-between h-screen sticky top-0 shrink-0">
       <div>
         <div className="h-14 px-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
           <Link href="/" className="flex items-center gap-2.5 group">
