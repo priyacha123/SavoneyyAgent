@@ -7,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// 1. Payment Gateway Settlement Record (e.g. Razorpay Settlement Report)
 model GatewaySettlement {
   id             String   @id @default(uuid())
   recordId       String   @unique // Correlation ID (e.g. REC-001)
@@ -21,7 +20,6 @@ model GatewaySettlement {
   createdAt      DateTime @default(now())
 }
 
-// 2. Bank Statement Record (Bank Account Feed)
 model BankStatement {
   id             String   @id @default(uuid())
   recordId       String?  // Optional correlation ID
@@ -32,7 +30,6 @@ model BankStatement {
   createdAt      DateTime @default(now())
 }
 
-// 3. Internal Ledger Entry (Merchant's Internal System)
 model LedgerEntry {
   id             String   @id @default(uuid())
   recordId       String   @unique // Correlation ID
@@ -44,7 +41,6 @@ model LedgerEntry {
   createdAt      DateTime @default(now())
 }
 
-// 4. Ground Truth Label Table (Used strictly for scoring/evaluation against real answer)
 model GroundTruthLabel {
   id              String   @id @default(uuid())
   recordId        String   @unique // Correlation ID
@@ -58,7 +54,6 @@ model GroundTruthLabel {
   createdAt       DateTime @default(now())
 }
 
-// 5. Audit Log Entry (Detailed decision trail for every record processed by agent)
 model ReconciliationLog {
   id                 String   @id @default(uuid())
   batchId            String   // Identifier for reconciliation run
@@ -76,7 +71,6 @@ model ReconciliationLog {
   createdAt          DateTime @default(now())
 }
 
-// 6. Reconciliation Summary Metrics (Overall batch run metrics)
 model ReconciliationMetrics {
   id                String   @id @default(uuid())
   batchId           String   @unique
@@ -93,7 +87,6 @@ model ReconciliationMetrics {
   runTimestamp      DateTime @default(now())
 }
 
-// 7. User Subscription Model (Razorpay Billing System)
 model UserSubscription {
   id                     String    @id @default(uuid())
   userId                 String    @default("usr_default")
@@ -111,7 +104,6 @@ model UserSubscription {
   updatedAt              DateTime  @updatedAt
 }
 
-// 8. Reconciliation Engine Rule Settings
 model EngineSettings {
   id                String   @id @default("default_settings")
   amountTolerance   Float    @default(0.0)  // Amount variance threshold in INR

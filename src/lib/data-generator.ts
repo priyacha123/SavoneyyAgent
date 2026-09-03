@@ -47,9 +47,8 @@ export function generateSyntheticDataset(totalRecords: number = 60): SyntheticDa
   const baseDate = new Date("2026-08-01");
 
   // Determine count distribution
-  const cleanCount = Math.floor(totalRecords * 0.7); // 70% clean
-  const discrepancyCount = totalRecords - cleanCount; // 30% discrepancies
-
+  const cleanCount = Math.floor(totalRecords * 0.7); 
+  const discrepancyCount = totalRecords - cleanCount; 
   const discrepancyTypes: Array<"amount_mismatch" | "missing_utr" | "duplicate" | "timing_gap" | "unmatched"> = [
     "amount_mismatch",
     "missing_utr",
@@ -188,7 +187,7 @@ export function generateSyntheticDataset(totalRecords: number = 60): SyntheticDa
           amount: grossAmount,
           fee,
           settledAmount,
-          utr: null, // missing UTR
+          utr: null,
           settlementDate: dateStr,
         });
 
@@ -276,7 +275,6 @@ export function generateSyntheticDataset(totalRecords: number = 60): SyntheticDa
       }
 
       case "timing_gap": {
-        // Bank value date is 10 days after gateway settlement date (beyond 3-day threshold)
         const delayedDate = new Date(txnDate.getTime() + 10 * 86400 * 1000).toISOString().split("T")[0];
 
         dataset.gatewayRecords.push({
@@ -294,7 +292,7 @@ export function generateSyntheticDataset(totalRecords: number = 60): SyntheticDa
           recordId,
           utr,
           creditedAmount: settledAmount,
-          valueDate: delayedDate, // 10 days delayed
+          valueDate: delayedDate,
           description: `CMS/RAZORPAY/${utr}/${settledAmount}`,
         });
 
@@ -314,7 +312,7 @@ export function generateSyntheticDataset(totalRecords: number = 60): SyntheticDa
           utr,
           expectedStatus: "matched_with_variance",
           discrepancyType: "timing_gap",
-          varianceAmount: 10, // 10 days gap
+          varianceAmount: 10, 
           notes: `Settlement timing gap of 10 days between Gateway (${dateStr}) and Bank credit (${delayedDate}).`,
         });
         break;
@@ -325,7 +323,7 @@ export function generateSyntheticDataset(totalRecords: number = 60): SyntheticDa
         dataset.ledgerRecords.push({
           recordId,
           orderId,
-          txnId: null, // No gateway transaction created
+          txnId: null, 
           expectedAmount: grossAmount,
           orderDate: dateStr,
           status: "PENDING_PAYMENT",

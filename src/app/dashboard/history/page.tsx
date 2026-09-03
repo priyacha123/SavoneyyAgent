@@ -10,18 +10,7 @@ import {
   ArrowUpRight,
   Calendar,
 } from "lucide-react";
-
-interface BatchRun {
-  id: string;
-  batchId: string;
-  startedAt: string;
-  completedAt: string | null;
-  totalRecords: number;
-  matchedCount: number;
-  varianceCount: number;
-  exceptionCount: number;
-  status: string;
-}
+import { BatchRun } from "@/lib/types";
 
 function StatusPill({ status }: { status: string }) {
   if (status === "completed")

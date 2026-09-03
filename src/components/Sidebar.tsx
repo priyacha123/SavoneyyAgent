@@ -5,51 +5,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ShieldCheck,
-  LayoutDashboard,
-  History,
-  Database,
-  CreditCard,
-  Settings,
-  Sparkles,
   ExternalLink,
   ChevronRight,
 } from "lucide-react";
+import { sideNavItems } from "@/lib/constants";
 
 export const Sidebar: React.FC = () => {
   const pathname = usePathname();
 
-  const navItems = [
-    {
-      name: "Reconciliation Workbench",
-      href: "/dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      name: "Batch History & Analytics",
-      href: "/dashboard/history",
-      icon: History,
-    },
-    {
-      name: "Connected Data Feeds",
-      href: "/dashboard/sources",
-      icon: Database,
-    },
-    {
-      name: "Razorpay Billing & Plans",
-      href: "/dashboard/billing",
-      icon: CreditCard,
-    },
-    {
-      name: "Engine Rules & Settings",
-      href: "/dashboard/settings",
-      icon: Settings,
-    },
-  ];
-
   return (
-    <aside className="w-64 bg-white border-r border-slate-200 flex flex-col justify-between h-screen sticky top-0 hidden md:flex shrink-0">
+    <aside className="w-64 bg-white border-r border-slate-200 flex flex-col justify-between h-screen sticky top-0 md:flex shrink-0">
       <div>
-        {/* Sidebar Header Brand */}
         <div className="h-14 px-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="h-8 w-8 rounded-md bg-slate-900 flex items-center justify-center text-white group-hover:bg-blue-700 transition-colors">
@@ -62,12 +28,11 @@ export const Sidebar: React.FC = () => {
           </Link>
         </div>
 
-        {/* Navigation Section */}
         <div className="p-3 space-y-1">
           <div className="px-2 pb-1.5 pt-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
             SaaS Workbench
           </div>
-          {navItems.map((item) => {
+          {sideNavItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
             return (
@@ -91,7 +56,6 @@ export const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* Sidebar Footer Account & Subscription Card */}
       <div className="p-3 border-t border-slate-200 bg-slate-50">
         <div className="p-3 rounded-lg bg-white border border-slate-200 shadow-2xs">
           <div className="flex items-center justify-between mb-1.5">

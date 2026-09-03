@@ -1,11 +1,7 @@
 import React from "react";
 import { X, Sparkles, CheckCircle2, AlertTriangle, XCircle, FileText, Check, AlertCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
-
-interface AuditDetailModalProps {
-  log: any | null;
-  onClose: () => void;
-}
+import { AuditDetailModalProps } from "@/lib/types";
 
 export const AuditDetailModal: React.FC<AuditDetailModalProps> = ({ log, onClose }) => {
   if (!log) return null;
@@ -40,7 +36,6 @@ export const AuditDetailModal: React.FC<AuditDetailModalProps> = ({ log, onClose
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-none flex items-center justify-center p-4 overflow-y-auto">
       <div className="bg-white border border-slate-300 rounded-xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-xl overflow-hidden">
-        {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
           <div>
             <div className="flex items-center gap-3">
@@ -62,9 +57,7 @@ export const AuditDetailModal: React.FC<AuditDetailModalProps> = ({ log, onClose
           </button>
         </div>
 
-        {/* Modal Body */}
         <div className="p-5 overflow-y-auto space-y-5">
-          {/* Gemini AI Reasoning Callout Box (Solid light blue, zero gradients) */}
           {log.geminiReasoning && (
             <div className="p-3.5 rounded-lg bg-blue-50/80 border border-blue-200">
               <div className="flex items-center gap-1.5 mb-1 text-blue-900 font-bold text-xs">
@@ -75,7 +68,6 @@ export const AuditDetailModal: React.FC<AuditDetailModalProps> = ({ log, onClose
             </div>
           )}
 
-          {/* 3-Way Disjointed Source Breakdown */}
           <div>
             <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5">
               3-Way Source Record Comparison
@@ -191,9 +183,7 @@ export const AuditDetailModal: React.FC<AuditDetailModalProps> = ({ log, onClose
             </div>
           </div>
 
-          {/* Audit Rule Log & Ground Truth Scoring */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {/* Rules Triggered */}
             <div className="p-3.5 rounded-lg bg-white border border-slate-200">
               <h4 className="text-xs font-bold text-slate-800 mb-2 flex items-center gap-1.5 font-sans">
                 <FileText className="h-3.5 w-3.5 text-slate-700" />
@@ -208,7 +198,6 @@ export const AuditDetailModal: React.FC<AuditDetailModalProps> = ({ log, onClose
               </ul>
             </div>
 
-            {/* Ground Truth Validation */}
             <div className="p-3.5 rounded-lg bg-white border border-slate-200 font-sans">
               <h4 className="text-xs font-bold text-slate-800 mb-2">Ground Truth Scoring Audit</h4>
               <div className="space-y-1.5 text-xs">
@@ -231,7 +220,6 @@ export const AuditDetailModal: React.FC<AuditDetailModalProps> = ({ log, onClose
           </div>
         </div>
 
-        {/* Modal Footer */}
         <div className="p-3.5 border-t border-slate-200 bg-slate-50 flex justify-end">
           <button
             onClick={onClose}

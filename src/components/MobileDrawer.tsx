@@ -6,64 +6,27 @@ import { usePathname } from "next/navigation";
 import {
   X,
   ShieldCheck,
-  LayoutDashboard,
-  History,
-  Database,
-  CreditCard,
-  Settings,
-  ExternalLink,
 } from "lucide-react";
+import { navItems } from "@/lib/constants";
+import { MobileDrawerProps } from "@/lib/types";
 
-interface MobileDrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
 
 export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) => {
   const pathname = usePathname();
 
   if (!isOpen) return null;
 
-  const navItems = [
-    {
-      name: "Reconciliation Workbench",
-      href: "/dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      name: "Batch History & Analytics",
-      href: "/dashboard/history",
-      icon: History,
-    },
-    {
-      name: "Connected Data Feeds",
-      href: "/dashboard/sources",
-      icon: Database,
-    },
-    {
-      name: "Razorpay Billing & Plans",
-      href: "/dashboard/billing",
-      icon: CreditCard,
-    },
-    {
-      name: "Engine Rules & Settings",
-      href: "/dashboard/settings",
-      icon: Settings,
-    },
-  ];
+
 
   return (
     <div className="fixed inset-0 z-50 md:hidden">
-      {/* Backdrop click overlay */}
       <div
         className="fixed inset-0 bg-slate-900/60 backdrop-none transition-opacity"
         onClick={onClose}
       />
 
-      {/* Slide-over menu panel */}
       <div className="fixed inset-y-0 left-0 max-w-xs w-full bg-white border-r border-slate-200 shadow-2xl flex flex-col justify-between z-50">
         <div>
-          {/* Header with EXPLICIT Close-Menu 'X' Button */}
           <div className="h-14 px-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
             <div className="flex items-center gap-2">
               <div className="h-7 w-7 rounded bg-slate-900 flex items-center justify-center text-white">
@@ -72,7 +35,6 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
               <span className="font-bold text-sm text-slate-900">Savoneyy SaaS</span>
             </div>
 
-            {/* Close Menu Button */}
             <button
               onClick={onClose}
               aria-label="Close navigation menu"
@@ -82,7 +44,6 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
             </button>
           </div>
 
-          {/* Navigation Links */}
           <div className="p-3 space-y-1">
             <div className="px-2 pb-1 pt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
               Navigation Menu
@@ -109,7 +70,6 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
           </div>
         </div>
 
-        {/* Footer */}
         <div className="p-4 border-t border-slate-200 bg-slate-50">
           <div className="text-xs font-bold text-slate-900">Active Plan: Razorpay Pro</div>
           <p className="text-[10px] text-slate-500 mt-0.5">₹2,999 / month • Track 4 Buildathon</p>

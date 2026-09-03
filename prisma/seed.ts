@@ -48,12 +48,12 @@ async function main() {
     });
   }
 
-  console.log("✅ Database seeding complete!");
+  console.log("Database seeding complete!");
 }
 
 main()
   .catch((e) => {
-    console.error("❌ Error seeding database:", e);
+    console.error("Error seeding database:", e);
     process.exit(1);
   })
   .finally(async () => {

@@ -24,7 +24,6 @@ export async function POST(req: Request) {
     const event = JSON.parse(body);
     const eventType = event.payload?.payment?.entity?.method || event.event;
 
-    // Handle subscription events
     const subscriptionEntity = event.payload?.subscription?.entity;
     const paymentEntity = event.payload?.payment?.entity;
 
@@ -36,7 +35,6 @@ export async function POST(req: Request) {
     const status = subscriptionEntity.status;
     const planId = subscriptionEntity.plan_id || "";
 
-    // Map Razorpay subscription plan ID back to internal plan ID
     let internalPlanId = "starter";
     for (const [key, value] of Object.entries(process.env)) {
       if (value === planId && key.startsWith("RAZORPAY_") && key.endsWith("_PLAN_ID")) {

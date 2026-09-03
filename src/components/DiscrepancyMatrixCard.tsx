@@ -1,9 +1,6 @@
 import React from "react";
 import { FileSearch } from "lucide-react";
-
-interface DiscrepancyMatrixCardProps {
-  matrix: Record<string, { total: number; detected: number; recallPercentage: number }> | null;
-}
+import { DiscrepancyMatrixCardProps } from "@/lib/types";
 
 const labelMap: Record<string, { title: string; desc: string }> = {
   amount_mismatch: {

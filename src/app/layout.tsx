@@ -1,13 +1,17 @@
 import { ClerkProvider } from '@clerk/nextjs';
-import { Inter } from 'next/font/google';
+import { Inter, Space_Grotesk } from 'next/font/google';
 import type { Metadata } from 'next';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-display' });
 
 export const metadata: Metadata = {
   title: 'Savoneyy — Multi-Source Financial Reconciliation Workbench',
   description: 'Enterprise Financial Settlement & Audit Trail Controller (Razorpay Buildathon Track 4)',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
@@ -30,7 +34,7 @@ export default function RootLayout({
         },
       }}
     >
-      <html lang="en" className={inter.variable}>
+      <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
         <body className="antialiased min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
           {children}
         </body>

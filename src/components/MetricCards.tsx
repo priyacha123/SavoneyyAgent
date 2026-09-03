@@ -1,19 +1,7 @@
 import React from "react";
 import { CheckCircle2, AlertTriangle, XCircle, Target, TrendingUp, Layers } from "lucide-react";
+import { MetricCardsProps } from "@/lib/types";
 
-interface MetricCardsProps {
-  metrics: {
-    totalRecords: number;
-    matchedCount: number;
-    varianceCount: number;
-    exceptionCount: number;
-    matchRate: number;
-    precision: number;
-    recall: number;
-    falsePositiveRate: number;
-    f1Score: number;
-  } | null;
-}
 
 export const MetricCards: React.FC<MetricCardsProps> = ({ metrics }) => {
   if (!metrics) {
@@ -28,7 +16,6 @@ export const MetricCards: React.FC<MetricCardsProps> = ({ metrics }) => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
-      {/* Card 1: Match Accuracy Rate */}
       <div className="p-3.5 rounded-lg flat-panel">
         <div className="flex items-center justify-between">
           <span className="text-xs text-slate-500 font-medium">Reconciliation Match Rate</span>
@@ -48,7 +35,6 @@ export const MetricCards: React.FC<MetricCardsProps> = ({ metrics }) => {
         </div>
       </div>
 
-      {/* Card 2: Precision & Recall */}
       <div className="p-3.5 rounded-lg flat-panel">
         <span className="text-xs text-slate-500 font-medium">Precision & Recall (Ground Truth)</span>
         <div className="flex items-baseline justify-between mt-1">
@@ -69,7 +55,6 @@ export const MetricCards: React.FC<MetricCardsProps> = ({ metrics }) => {
         </div>
       </div>
 
-      {/* Card 3: Classification Distribution */}
       <div className="p-3.5 rounded-lg flat-panel">
         <span className="text-xs text-slate-500 font-medium">Batch Record Classification</span>
         <div className="flex items-center justify-between mt-1.5">
@@ -105,7 +90,6 @@ export const MetricCards: React.FC<MetricCardsProps> = ({ metrics }) => {
         </div>
       </div>
 
-      {/* Card 4: Total Batch Volume */}
       <div className="p-3.5 rounded-lg flat-panel">
         <span className="text-xs text-slate-500 font-medium">Total Record Volume</span>
         <div className="flex items-baseline gap-2 mt-1">

@@ -12,89 +12,13 @@ import {
   Clock,
   AlertTriangle,
 } from "lucide-react";
+import { PLANS } from "@/lib/constants";
+import { Plan, Subscription } from "@/lib/types";
 
-// Declare Razorpay on window for TypeScript
 declare global {
   interface Window {
     Razorpay: any;
   }
-}
-
-interface Plan {
-  id: string;
-  name: string;
-  price: number;
-  priceLabel: string;
-  description: string;
-  icon: React.ElementType;
-  features: string[];
-  highlight?: boolean;
-  badge?: string;
-}
-
-const PLANS: Plan[] = [
-  {
-    id: "starter",
-    name: "Starter",
-    price: 99900,         // paise — ₹999
-    priceLabel: "₹999",
-    description: "For early-stage fintechs and solo operators testing reconciliation workflows.",
-    icon: Zap,
-    features: [
-      "Up to 5,000 records / batch",
-      "1 Gateway Integration",
-      "1 Bank Feed",
-      "Manual Trigger Only",
-      "7-day log retention",
-      "Email support",
-    ],
-  },
-  {
-    id: "pro",
-    name: "Pro",
-    price: 299900,        // paise — ₹2,999
-    priceLabel: "₹2,999",
-    description: "For growing payment operations teams running daily automated reconciliation.",
-    icon: ShieldCheck,
-    features: [
-      "Up to 50,000 records / batch",
-      "3 Gateway Integrations",
-      "3 Bank Feeds",
-      "Scheduled + Webhook Triggers",
-      "Gemini AI Exception Reasoner",
-      "30-day log retention",
-      "Priority email + Slack support",
-    ],
-    highlight: true,
-    badge: "Most Popular",
-  },
-  {
-    id: "enterprise",
-    name: "Enterprise",
-    price: 999900,        // paise — ₹9,999
-    priceLabel: "₹9,999",
-    description: "For large enterprises needing unlimited throughput, custom integrations, and SLAs.",
-    icon: Building2,
-    features: [
-      "Unlimited records",
-      "Unlimited Integrations",
-      "Dedicated Razorpay Account Manager",
-      "Custom matching rules engine",
-      "Real-time streaming reconciliation",
-      "90-day audit log retention",
-      "24×7 phone + SLA support",
-    ],
-  },
-];
-
-interface Subscription {
-  planId: string;
-  planName: string;
-  status: string;
-  nextBilling: string | null;
-  orderId: string | null;
-  subscriptionId: string | null;
-  amount: number;
 }
 
 function loadRazorpayScript(): Promise<boolean> {
@@ -169,7 +93,6 @@ export default function BillingPage() {
         return;
       }
 
-      // Simulation mode — if keys not configured
       if (sub?.isSimulated) {
         setSuccessMsg(
           `[SIMULATION] Plan "${plan.name}" purchase simulated. Subscription ID: ${sub.id}. No real charge made.`
@@ -221,11 +144,14 @@ export default function BillingPage() {
         },
       };
 
-      if (sub && !sub.isSimulated) {
-        options.order_id = sub.id;
-      }
-
       const rzp = new window.Razorpay(options);
+      rzp.on("payment.failed", (response: any) => {
+        const error = response?.error;
+        setErrorMsg(
+          error?.description || error?.reason || "Razorpay could not complete the subscription authorisation."
+        );
+        setPayingPlan(null);
+      });
       rzp.open();
     } catch (e: any) {
       setErrorMsg(e?.message || "Payment initiation failed.");
@@ -236,7 +162,6 @@ export default function BillingPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="pb-4 border-b border-slate-200">
         <h1 className="text-xl font-bold text-slate-900 tracking-tight">Razorpay Billing & Plans</h1>
         <p className="text-xs text-slate-500 mt-0.5">
@@ -244,7 +169,6 @@ export default function BillingPage() {
         </p>
       </div>
 
-      {/* Current Subscription Banner */}
       {!isLoading && subscription && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center gap-3">
           <ShieldCheck className="h-5 w-5 text-blue-700 shrink-0" />
@@ -265,7 +189,6 @@ export default function BillingPage() {
         </div>
       )}
 
-      {/* Success / Error Messages */}
       {successMsg && (
         <div className="flex items-start gap-2 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-800">
           <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-emerald-700" />
@@ -279,7 +202,6 @@ export default function BillingPage() {
         </div>
       )}
 
-      {/* Plans Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {PLANS.map((plan) => {
           const Icon = plan.icon;
@@ -293,7 +215,6 @@ export default function BillingPage() {
                 plan.highlight ? "border-blue-300 ring-2 ring-blue-100" : "border-slate-200"
               } ${isCurrent ? "border-emerald-300 ring-2 ring-emerald-50" : ""}`}
             >
-              {/* Plan Header */}
               <div className={`p-4 border-b ${plan.highlight ? "border-blue-100 bg-blue-50" : "border-slate-100 bg-slate-50"}`}>
                 <div className="flex items-center justify-between mb-2">
                   <div className={`h-8 w-8 rounded-md flex items-center justify-center ${plan.highlight ? "bg-blue-700 text-white" : "bg-slate-100 text-slate-700 border border-slate-200"}`}>
@@ -314,7 +235,6 @@ export default function BillingPage() {
                 <p className={`text-[11px] mt-0.5 ${plan.highlight ? "text-blue-700" : "text-slate-500"}`}>{plan.description}</p>
               </div>
 
-              {/* Price */}
               <div className="px-4 py-3 border-b border-slate-100">
                 <div className="flex items-baseline gap-1">
                   <span className="text-2xl font-bold font-mono text-slate-900">{plan.priceLabel}</span>
@@ -323,7 +243,6 @@ export default function BillingPage() {
                 <p className="text-[10px] text-slate-400 mt-0.5">+ 18% GST applicable</p>
               </div>
 
-              {/* Features */}
               <ul className="p-4 space-y-2 flex-1">
                 {plan.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-xs text-slate-700">
@@ -333,7 +252,6 @@ export default function BillingPage() {
                 ))}
               </ul>
 
-              {/* CTA */}
               <div className="p-4 border-t border-slate-100">
                 {isCurrent ? (
                   <button
@@ -372,7 +290,6 @@ export default function BillingPage() {
         })}
       </div>
 
-      {/* Razorpay Trust Badge */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 bg-white rounded-lg border border-slate-200 text-xs text-slate-500">
         <div className="flex items-center gap-2">
           <ShieldCheck className="h-4 w-4 text-blue-700" />

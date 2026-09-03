@@ -73,7 +73,6 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-5">
-      {/* Page Header with Batch Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
         <div>
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">Reconciliation Workbench</h1>
@@ -106,13 +105,10 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Metrics Cards */}
       <MetricCards metrics={metrics} />
 
-      {/* Discrepancy Matrix */}
       <DiscrepancyMatrixCard matrix={metrics?.discrepancyMatrix || null} />
 
-      {/* Audit Table */}
       <div className="bg-white rounded-lg border border-slate-200 shadow-xs overflow-hidden">
         <div className="p-3.5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50">
           <div className="flex items-center gap-2">

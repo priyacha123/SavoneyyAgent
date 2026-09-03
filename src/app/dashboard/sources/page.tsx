@@ -2,73 +2,19 @@
 
 import React, { useState } from "react";
 import {
-  Database,
-  CheckCircle2,
-  XCircle,
   RefreshCw,
   Plus,
   ExternalLink,
   Wifi,
   WifiOff,
   Clock,
-  FileSpreadsheet,
-  Building2,
-  Landmark,
 } from "lucide-react";
+import { DataSource } from "@/lib/types";
+import { DEFAULT_SETTINGS, SOURCES } from "@/lib/constants";
 
-interface DataSource {
-  id: string;
-  name: string;
-  type: "gateway" | "bank" | "erp";
-  status: "connected" | "disconnected" | "syncing";
-  lastSync: string;
-  recordCount: number;
-  description: string;
-  icon: React.ElementType;
-}
 
-const SOURCES: DataSource[] = [
-  {
-    id: "rzp-gateway",
-    name: "Razorpay Settlement Reports",
-    type: "gateway",
-    status: "connected",
-    lastSync: "2 minutes ago",
-    recordCount: 8_420,
-    description: "Live settlement payout reports from the Razorpay Payment Gateway API. Auto-pulled every 15 min.",
-    icon: FileSpreadsheet,
-  },
-  {
-    id: "hdfc-bank",
-    name: "HDFC Bank — Credit Advice Feed",
-    type: "bank",
-    status: "connected",
-    lastSync: "18 minutes ago",
-    recordCount: 7_891,
-    description: "Automated Bank Statement / Credit Advice XML feed via SFTP. Covers HDFC Nodal Account.",
-    icon: Landmark,
-  },
-  {
-    id: "erp-ledger",
-    name: "ERP General Ledger (SAP B1)",
-    type: "erp",
-    status: "syncing",
-    lastSync: "Syncing…",
-    recordCount: 8_011,
-    description: "SAP Business One GL export pushed via secure REST webhook on each posting batch.",
-    icon: Building2,
-  },
-  {
-    id: "kotak-bank",
-    name: "Kotak Mahindra — Bank Credit Feed",
-    type: "bank",
-    status: "disconnected",
-    lastSync: "3 days ago",
-    recordCount: 0,
-    description: "Secondary bank account credit advice feed. Currently disconnected — re-authorize credentials.",
-    icon: Landmark,
-  },
-];
+
+
 
 const typeLabels: Record<string, string> = {
   gateway: "Payment Gateway",
@@ -112,7 +58,6 @@ export default function SourcesPage() {
 
   return (
     <div className="space-y-5">
-      {/* Header */}
       <div className="pb-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">Connected Data Feeds</h1>
@@ -126,14 +71,8 @@ export default function SourcesPage() {
         </button>
       </div>
 
-      {/* Summary Row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {[
-          { label: "Connected", value: connected, color: "text-emerald-700", icon: CheckCircle2 },
-          { label: "Syncing", value: syncing, color: "text-blue-700", icon: RefreshCw },
-          { label: "Disconnected", value: disconnected, color: "text-red-700", icon: XCircle },
-          { label: "Total Records", value: totalRecords.toLocaleString(), color: "text-slate-800", icon: Database },
-        ].map((item) => (
+        {DEFAULT_SETTINGS.map((item) => (
           <div key={item.label} className="bg-white border border-slate-200 rounded-lg p-4 shadow-2xs">
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{item.label}</span>
@@ -144,7 +83,6 @@ export default function SourcesPage() {
         ))}
       </div>
 
-      {/* Source Cards Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {sources.map((source) => {
           const Icon = source.icon;
@@ -155,7 +93,6 @@ export default function SourcesPage() {
                 source.status === "disconnected" ? "border-red-200" : "border-slate-200"
               }`}
             >
-              {/* Card Header */}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <div
@@ -173,10 +110,8 @@ export default function SourcesPage() {
                 <StatusBadge status={source.status} />
               </div>
 
-              {/* Description */}
               <p className="text-[11px] text-slate-600 leading-relaxed">{source.description}</p>
 
-              {/* Metadata Row */}
               <div className="flex items-center justify-between pt-2 border-t border-slate-100">
                 <div className="flex items-center gap-1 text-[10px] text-slate-500">
                   <Clock className="h-3 w-3" />
@@ -187,7 +122,6 @@ export default function SourcesPage() {
                 </div>
               </div>
 
-              {/* Actions */}
               <div className="flex items-center gap-2">
                 <button className="flex-1 flex items-center justify-center gap-1.5 py-1 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded transition-colors">
                   <RefreshCw className="h-3 w-3" /> Force Sync

@@ -1,17 +1,10 @@
-import React from "react";
-import { ShieldCheck, RefreshCw, Play, Building2 } from "lucide-react";
-
-interface NavbarProps {
-  onRunBatch: () => void;
-  onSeedData: () => void;
-  isLoading: boolean;
-}
+import { NavbarProps } from "@/lib/types";
+import { ShieldCheck, RefreshCw, Play } from "lucide-react";
 
 export const Navbar: React.FC<NavbarProps> = ({ onRunBatch, onSeedData, isLoading }) => {
   return (
     <header className="border-b border-slate-200 bg-white sticky top-0 z-40 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
-        {/* Brand */}
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-md bg-slate-900 flex items-center justify-center text-white">
             <ShieldCheck className="h-5 w-5" />
@@ -27,7 +20,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onRunBatch, onSeedData, isLoadin
           </div>
         </div>
 
-        {/* Action Controls */}
         <div className="flex items-center gap-2.5">
           <button
             onClick={onSeedData}

@@ -58,11 +58,8 @@ export const PRICING_PLANS: PricingPlan[] = [
   },
 ];
 
-export const PLAN_ID_MAP: Record<string, string> = {
-  starter: process.env.RAZORPAY_STARTER_PLAN_ID || "",
-  pro: process.env.RAZORPAY_PRO_PLAN_ID || "",
-  enterprise: process.env.RAZORPAY_ENTERPRISE_PLAN_ID || "",
-};
+// In-memory cache for dynamically created Razorpay plan IDs
+const razorpayPlanCache: Record<string, string> = {};
 
 // Initialize Razorpay SDK instance
 export function getRazorpayInstance(): Razorpay | null {
@@ -76,6 +73,31 @@ export function getRazorpayInstance(): Razorpay | null {
     });
   }
   return null;
+}
+
+// Create a Razorpay plan with the exact amount for our pricing
+export async function getOrCreateRazorpayPlan(planId: string, amountInPaise: number): Promise<string> {
+  if (razorpayPlanCache[planId]) {
+    return razorpayPlanCache[planId];
+  }
+
+  const instance = getRazorpayInstance();
+  if (!instance) {
+    throw new Error("Razorpay instance not available");
+  }
+
+  const razorpayPlan = await instance.plans.create({
+    period: "monthly",
+    interval: 1,
+    item: {
+      name: `${planId.charAt(0).toUpperCase() + planId.slice(1)} Plan`,
+      amount: amountInPaise,
+      currency: "INR",
+    },
+  });
+
+  razorpayPlanCache[planId] = razorpayPlan.id;
+  return razorpayPlan.id;
 }
 
 // Generate Razorpay Order or Simulated Fallback Order
@@ -116,52 +138,51 @@ export async function createRazorpayOrder(planId: string) {
   };
 }
 
-// Create Razorpay Subscription using plan IDs from .env
+// Create Razorpay Subscription with dynamic plan creation to ensure correct amounts
 export async function createRazorpaySubscription(planId: string) {
   const plan = PRICING_PLANS.find((p) => p.id === planId);
   if (!plan) throw new Error("Invalid plan selected");
 
-  const razorpayPlanId = PLAN_ID_MAP[planId];
   const amountInPaise = plan.price * 100;
   const instance = getRazorpayInstance();
 
-  if (!razorpayPlanId) {
-    throw new Error(`Razorpay plan ID not configured for plan: ${planId}`);
+  if (!instance) {
+    // Fallback simulated subscription for testing/demo without live credentials
+    return {
+      id: `sub_rzp_${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
+      planId: plan.id,
+      planName: plan.name,
+      amount: amountInPaise,
+      currency: "INR",
+      status: "created",
+      isSimulated: true,
+    };
   }
 
-  if (instance) {
-    try {
-      const subscription = await instance.subscriptions.create({
-        plan_id: razorpayPlanId,
-        total_count: 1200,
-        start_at: Math.floor(Date.now() / 1000) + 60,
-      });
+  try {
+    const configuredPlanId = process.env[`RAZORPAY_${planId.toUpperCase()}_PLAN_ID`];
+    const razorpayPlanId = configuredPlanId || await getOrCreateRazorpayPlan(planId, amountInPaise);
 
-      return {
-        id: subscription.id,
-        planId: plan.id,
-        planName: plan.name,
-        amount: amountInPaise,
-        currency: "INR",
-        status: subscription.status,
-        isSimulated: false,
-      };
-    } catch (err: any) {
-      console.error("Razorpay subscription creation failed:", err);
-      throw new Error(err?.description || "Failed to create Razorpay subscription");
-    }
+    const subscription = await instance.subscriptions.create({
+      plan_id: razorpayPlanId,
+      // Razorpay starts the subscription after its Checkout authorisation payment.
+      // 360 monthly cycles is within Razorpay's 30-year subscription limit.
+      total_count: 360,
+    });
+
+    return {
+      id: subscription.id,
+      planId: plan.id,
+      planName: plan.name,
+      amount: amountInPaise,
+      currency: "INR",
+      status: subscription.status,
+      isSimulated: false,
+    };
+  } catch (err: any) {
+    console.error("Razorpay subscription creation failed:", err);
+    throw new Error(err?.description || "Failed to create Razorpay subscription");
   }
-
-  // Fallback simulated subscription for testing/demo without live credentials
-  return {
-    id: `sub_rzp_${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
-    planId: plan.id,
-    planName: plan.name,
-    amount: amountInPaise,
-    currency: "INR",
-    status: "created",
-    isSimulated: true,
-  };
 }
 
 // Verify Razorpay Payment Signature (supports both order and subscription payments)

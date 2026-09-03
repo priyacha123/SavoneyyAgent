@@ -4,7 +4,6 @@ import { generateSyntheticDataset } from "@/lib/data-generator";
 
 export async function POST() {
   try {
-    // Clear old records
     await prisma.reconciliationLog.deleteMany({});
     await prisma.reconciliationMetrics.deleteMany({});
     await prisma.gatewaySettlement.deleteMany({});
@@ -12,7 +11,6 @@ export async function POST() {
     await prisma.ledgerEntry.deleteMany({});
     await prisma.groundTruthLabel.deleteMany({});
 
-    // Generate fresh synthetic dataset
     const dataset = generateSyntheticDataset(60);
 
     for (const g of dataset.gatewayRecords) await prisma.gatewaySettlement.create({ data: g });

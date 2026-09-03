@@ -12,19 +12,17 @@ export interface MetricResults {
   matchedCount: number;
   varianceCount: number;
   exceptionCount: number;
-  matchRate: number;         // Overall reconciliation success percentage
-  precision: number;         // Precision of exception/variance detection
-  recall: number;            // Recall of exception/variance detection
-  falsePositiveRate: number; // Rate of false exceptions flagged on clean records
-  f1Score: number;           // Harmonic mean of precision & recall
+  matchRate: number;         
+  precision: number;         
+  recall: number;            
+  falsePositiveRate: number; 
+  f1Score: number;           
   correctlyClassifiedCount: number;
   discrepancyMatrix: Record<string, { total: number; detected: number; recallPercentage: number }>;
 }
 
 export class Evaluator {
-  /**
-   * Evaluates agent match decisions against ground-truth dataset labels.
-   */
+
   public evaluate(decisions: MatchDecision[], groundTruthLabels: GroundTruthLabel[]): MetricResults {
     const gtMap = new Map<string, GroundTruthLabel>();
     groundTruthLabels.forEach((gt) => gtMap.set(gt.recordId, gt));
@@ -34,14 +32,13 @@ export class Evaluator {
     let varianceCount = 0;
     let exceptionCount = 0;
 
-    let truePositives = 0;  // Correctly flagged non-clean records (variance or exception)
-    let falsePositives = 0; // Clean records incorrectly flagged as exception/variance
-    let falseNegatives = 0; // Non-clean records incorrectly passed as clean match
-    let trueNegatives = 0;  // Clean records correctly passed as clean match
+    let truePositives = 0;  
+    let falsePositives = 0;
+    let falseNegatives = 0; 
+    let trueNegatives = 0;  
 
     let correctlyClassifiedCount = 0;
 
-    // Discrepancy type tracker
     const matrix: Record<string, { total: number; detected: number; recallPercentage: number }> = {
       amount_mismatch: { total: 0, detected: 0, recallPercentage: 0 },
       missing_utr: { total: 0, detected: 0, recallPercentage: 0 },

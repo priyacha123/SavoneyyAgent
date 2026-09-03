@@ -11,16 +11,11 @@ export class ExceptionReasoner {
     }
   }
 
-  /**
-   * Generates a concise 1-2 sentence plain-English explanation for why a record failed perfect reconciliation.
-   */
   public async explainException(decision: MatchDecision): Promise<string> {
-    // If exact match with 0 variance, no exception reasoning needed
     if (decision.status === "matched") {
       return "Record successfully reconciled with 100% 3-way match across Gateway, Bank, and Ledger.";
     }
 
-    // Try calling Gemini if API key is configured
     if (this.ai) {
       try {
         const response = await this.ai.models.generateContent({
@@ -58,13 +53,9 @@ Format: Return ONLY the 1-sentence plain English explanation.`,
       }
     }
 
-    // Rule-based deterministic fallback when offline or API key absent
     return this.generateFallbackExplanation(decision);
   }
 
-  /**
-   * Deterministic explanation generator based on triggered rules.
-   */
   private generateFallbackExplanation(decision: MatchDecision): string {
     const rules = decision.rulesFired;
     const { gateway, bank, ledger } = decision.candidateRecords;

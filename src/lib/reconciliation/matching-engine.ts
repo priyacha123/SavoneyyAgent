@@ -27,7 +27,7 @@ export interface CandidateSourceGroup {
 export interface MatchDecision {
   recordId: string;
   status: "matched" | "matched_with_variance" | "exception";
-  confidenceScore: number; // 0.0 to 1.0
+  confidenceScore: number; 
   rulesFired: string[];
   candidateRecords: CandidateSourceGroup;
   varianceAmount?: number;
@@ -35,10 +35,6 @@ export interface MatchDecision {
 }
 
 export class MatchingEngine {
-  /**
-   * Processes a record group across Gateway, Bank, and Ledger.
-   * Runs Pass 1 (Exact matching) followed by Pass 2 (Rule-based fuzzy/variance evaluation).
-   */
   public evaluateRecordGroup(candidate: CandidateSourceGroup): MatchDecision {
     const rulesFired: string[] = [];
     const unresolvedReasons: string[] = [];

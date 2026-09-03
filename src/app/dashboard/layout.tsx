@@ -8,14 +8,9 @@ import { MobileDrawer } from "@/components/MobileDrawer";
 import { Footer } from "@/components/Footer";
 import { Menu, CreditCard, ChevronRight } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
+import { BREADCRUMB_MAP } from "@/lib/constants";
 
-const BREADCRUMB_MAP: Record<string, string> = {
-  "/dashboard": "Reconciliation Workbench",
-  "/dashboard/history": "Batch History & Analytics",
-  "/dashboard/sources": "Connected Data Feeds",
-  "/dashboard/billing": "Razorpay Billing & Plans",
-  "/dashboard/settings": "Engine Rules & Settings",
-};
+
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -24,17 +19,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex font-sans">
-      {/* Desktop Persistent Sidebar */}
       <Sidebar />
 
-      {/* Mobile Drawer (with dedicated close-menu X button) */}
       <MobileDrawer isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
 
-      {/* Main App Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Header Navigation Bar */}
         <header className="h-14 bg-white border-b border-slate-200 sticky top-0 z-30 px-4 sm:px-6 flex items-center justify-between shadow-2xs">
-          {/* Mobile Hamburger + Breadcrumb */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsMobileMenuOpen(true)}
@@ -45,7 +35,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Menu className="h-5 w-5" />
             </button>
 
-            {/* Breadcrumb */}
             <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
               <Link href="/" className="hover:text-slate-900 transition-colors hidden sm:block">
                 Savoneyy
@@ -63,12 +52,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {pathname === "/dashboard" && (
                 <span className="text-slate-900 font-semibold sm:block hidden">{pageTitle}</span>
               )}
-              {/* Mobile: show only current page */}
               <span className="text-slate-900 font-semibold sm:hidden">{pageTitle}</span>
             </div>
           </div>
 
-          {/* Header Right: Plan Badge + User */}
           <div className="flex items-center gap-3">
             <Link
               href="/dashboard/billing"
@@ -83,11 +70,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </header>
 
-        {/* Page Content */}
         <main className="flex-1 p-4 sm:p-6 max-w-[90%] w-full mx-auto">{children}</main>
-
-        {/* Footer */}
-        <Footer />
       </div>
     </div>
   );

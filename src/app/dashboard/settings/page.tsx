@@ -13,30 +13,7 @@ import {
   Code2,
   Lock,
 } from "lucide-react";
-
-interface EngineSettings {
-  matchTolerancePercent: number;
-  utrRequiredForMatch: boolean;
-  geminiAiEnabled: boolean;
-  geminiReasoningThreshold: number;
-  autoRunSchedule: string;
-  notifyOnException: boolean;
-  notifyEmail: string;
-  webhookUrl: string;
-  apiKeyMasked: string;
-}
-
-const defaultSettings: EngineSettings = {
-  matchTolerancePercent: 0.5,
-  utrRequiredForMatch: true,
-  geminiAiEnabled: true,
-  geminiReasoningThreshold: 60,
-  autoRunSchedule: "daily",
-  notifyOnException: true,
-  notifyEmail: "ops@yourcompany.com",
-  webhookUrl: "",
-  apiKeyMasked: "sk-•••••••••••••••••••••••••••",
-};
+import { defaultSettings, EngineSettings } from "@/lib/types";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<EngineSettings>(defaultSettings);
